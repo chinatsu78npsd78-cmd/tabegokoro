@@ -50,10 +50,10 @@
   .nav-inner{max-width:480px;margin:0 auto;display:flex;}
   .nav-btn{
     flex:1;border:none;background:none;padding:9px 0 7px;cursor:pointer;
-    font-family:inherit;color:var(--ink-soft);font-size:.68rem;letter-spacing:.03em;
+    font-family:inherit;color:var(--ink-soft);font-size:.62rem;letter-spacing:0;
     display:flex;flex-direction:column;align-items:center;gap:1px;
   }
-  .nav-btn .ic{font-size:1.35rem;line-height:1.2;filter:grayscale(.6);opacity:.65;transition:.2s;}
+  .nav-btn .ic{font-size:1.24rem;line-height:1.2;filter:grayscale(.6);opacity:.65;transition:.2s;}
   .nav-btn.active{color:var(--pink);font-weight:700;}
   .nav-btn.active .ic{filter:none;opacity:1;transform:translateY(-2px);}
 
@@ -183,6 +183,29 @@
     box-shadow:var(--shadow);border:1px solid #fff;
   }
 
+  /* --- work (ほどく) --- */
+  .step-dots{display:flex;justify-content:center;gap:8px;margin-bottom:14px;}
+  .step-dot{width:9px;height:9px;border-radius:50%;background:var(--line);transition:.25s;}
+  .step-dot.on{background:var(--pink);transform:scale(1.25);}
+  .step-dot.done{background:var(--lav);}
+  .step-label{text-align:center;font-size:.72rem;font-weight:700;letter-spacing:.15em;color:var(--lav);margin-bottom:14px;}
+  .work-q{font-size:.92rem;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.7;}
+  .work-hint{font-size:.78rem;color:var(--ink-soft);margin-bottom:10px;line-height:1.85;}
+  .permit-preview{
+    background:linear-gradient(160deg,#FFF3F0,#F4EEFA);border-radius:18px;padding:24px 20px;text-align:center;
+    font-weight:700;color:#7A6660;font-size:1.08rem;line-height:2;box-shadow:var(--shadow);border:1px solid #fff;margin:6px 0 14px;
+  }
+  .tmpl-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .row-btns{display:flex;gap:10px;}
+  .row-btns .btn{margin-top:0;}
+  .work-item{
+    background:var(--card);border-radius:16px;box-shadow:var(--shadow);border:1px solid #fff;
+    padding:14px 16px;margin-bottom:10px;
+  }
+  .work-item .wp{font-weight:700;color:#B06A75;font-size:.96rem;line-height:1.8;}
+  .work-item .wmeta{font-size:.74rem;color:var(--ink-soft);margin-top:5px;}
+  .work-item .wdel{border:none;background:none;color:#D8C7BD;cursor:pointer;font-size:.85rem;padding:2px 4px;float:right;}
+
   footer{
     text-align:center;font-size:.7rem;color:#C9BAB1;line-height:1.9;padding:22px 14px 8px;
   }
@@ -199,7 +222,7 @@
   <section id="view-home" class="view show">
     <div class="today-date" id="todayDate"></div>
     <div class="kotoba-card">
-      <div class="kotoba-label">きょうのことば</div>
+      <div class="kotoba-label" id="kotobaLabel">きょうのことば</div>
       <div class="kotoba-main" id="kotobaMain"></div>
       <div class="kotoba-sub" id="kotobaSub"></div>
     </div>
@@ -309,6 +332,29 @@
     </div>
   </section>
 
+  <!-- ============ WORK（ほどく） ============ -->
+  <section id="view-work" class="view">
+    <div class="card" style="background:linear-gradient(160deg,#F4EEFA,#FFF3F0);">
+      <h2><span class="em">🔓</span>ほどく</h2>
+      <p class="note" style="line-height:1.95;">つい食べすぎちゃうのは、意志の弱さじゃない。潜在意識が、あなたを守るために作った「ブロック（思い込み）」があるのかも。ここでは、そのブロックを<b>①ほりさげる → ②書きかえる → ③なじませる</b>の3ステップで、やさしくほどいていきます。数分でだいじょうぶ。</p>
+    </div>
+
+    <div id="workHome">
+      <button class="btn lav" onclick="workStart()">🌷 あたらしく、ひとつほどく</button>
+      <div id="workListWrap"></div>
+    </div>
+
+    <div id="workFlow" style="display:none;">
+      <div class="card">
+        <div class="step-dots" id="stepDots"></div>
+        <div class="step-label" id="stepLabel"></div>
+        <div id="stepBody"></div>
+        <div class="row-btns" id="stepNav" style="margin-top:16px;"></div>
+      </div>
+      <p class="note" style="text-align:center;">とちゅうでやめても、責めないでね。<br>ほどくのは、いつでもいい🌱</p>
+    </div>
+  </section>
+
   <footer>
     たべごころ。は医療診断ではありません。<br>
     体や心のつらさが続くときは、お医者さんにも頼ってね。<br>
@@ -322,6 +368,7 @@
     <button class="nav-btn" data-v="record"><span class="ic">📝</span>きろく</button>
     <button class="nav-btn" data-v="pattern"><span class="ic">🔍</span>けはい</button>
     <button class="nav-btn" data-v="learn"><span class="ic">🌱</span>しくみ</button>
+    <button class="nav-btn" data-v="work"><span class="ic">🔓</span>ほどく</button>
     <button class="nav-btn" data-v="watashi"><span class="ic">💗</span>わたし</button>
   </div>
 </nav>
@@ -441,9 +488,12 @@ let data = load();
 function load(){
   try{
     const d = JSON.parse(localStorage.getItem(KEY));
-    if(d && Array.isArray(d.entries)) return d;
+    if(d && Array.isArray(d.entries)){
+      if(!Array.isArray(d.works)) d.works = [];
+      return d;
+    }
   }catch(e){}
-  return { entries: [] };
+  return { entries: [], works: [] };
 }
 function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
 
@@ -462,7 +512,7 @@ function esc(s){
 }
 
 /* ================= views ================= */
-const views = ["home","record","pattern","learn","watashi"];
+const views = ["home","record","pattern","learn","work","watashi"];
 function switchView(v){
   views.forEach(x=>{
     document.getElementById("view-"+x).classList.toggle("show", x===v);
@@ -473,6 +523,7 @@ function switchView(v){
   if(v==="home") renderHome();
   if(v==="record") renderLog();
   if(v==="pattern") renderPattern();
+  if(v==="work") renderWorkHome();
   window.scrollTo({top:0});
 }
 document.querySelectorAll(".nav-btn").forEach(b=>{
@@ -485,9 +536,20 @@ function renderHome(){
   document.getElementById("todayDate").textContent = jpDate(t);
   const d = new Date();
   const seed = d.getFullYear()*372 + (d.getMonth()+1)*31 + d.getDate();
-  const w = DAILY_WORDS[seed % DAILY_WORDS.length];
-  document.getElementById("kotobaMain").innerHTML = esc(w.m).replace(/\n/g,"<br>");
-  document.getElementById("kotobaSub").textContent = w.s;
+
+  // 「ほどく」で作った許可のことばが1つでもあれば、3日に1度そっと届ける（定着）
+  const permits = (data.works||[]).map(w=>w.permit).filter(Boolean);
+  if(permits.length && seed % 3 === 0){
+    const mine = permits[seed % permits.length];
+    document.getElementById("kotobaLabel").textContent = "あなたが、ほどいて決めたことば";
+    document.getElementById("kotobaMain").innerHTML = esc(mine).replace(/\n/g,"<br>");
+    document.getElementById("kotobaSub").textContent = "自分で選んだ言葉ほど、潜在意識にやさしく届くみたい。";
+  }else{
+    const w = DAILY_WORDS[seed % DAILY_WORDS.length];
+    document.getElementById("kotobaLabel").textContent = "きょうのことば";
+    document.getElementById("kotobaMain").innerHTML = esc(w.m).replace(/\n/g,"<br>");
+    document.getElementById("kotobaSub").textContent = w.s;
+  }
 
   const todays = data.entries.filter(e=>e.date===t);
   document.getElementById("sumCount").textContent = todays.length;
@@ -743,6 +805,167 @@ document.getElementById("unlockBtn").addEventListener("click",()=>{
 document.getElementById("passInput").addEventListener("keydown",(e)=>{
   if(e.key==="Enter") document.getElementById("unlockBtn").click();
 });
+
+/* ================= work（ほどく：3ステップ） ================= */
+const PERMIT_TMPL = [
+  "わたしは、ちゃんと食べていい。",
+  "わたしは、受けとっていい。",
+  "わたしは、安心していい。",
+  "わたしは、わたしのままでいい。",
+  "もう、がんばらなくていい。"
+];
+let workDraft = null;
+let workStep = 1;
+
+function renderWorkHome(){
+  document.getElementById("workHome").style.display = "block";
+  document.getElementById("workFlow").style.display = "none";
+  const works = data.works || [];
+  const wrap = document.getElementById("workListWrap");
+  if(works.length === 0){
+    wrap.innerHTML = '<div class="card"><p class="empty" style="padding:14px 6px;">まだ、ほどいたブロックはありません。<br>気になる食べ方をひとつ、いっしょに見つめてみる？🌱</p></div>';
+    return;
+  }
+  let html = '<div class="card" style="padding-bottom:10px;"><h2><span class="em">🌸</span>ほどいたブロック・じぶんのことば</h2>'
+    + '<p class="note" style="margin-bottom:12px;">ここで決めたことばは、ホームの「きょうのことば」に時々まざって届きます。見返すたびに、なじんでいくよ。</p></div>';
+  works.slice().reverse().forEach(w=>{
+    html += '<div class="work-item">'
+      + '<button class="wdel" onclick="delWork('+w.id+')">✕</button>'
+      + '<div class="wp">「'+esc(w.permit)+'」</div>'
+      + '<div class="wmeta">'+esc(w.pattern||"食べ方")+' をほどいた（'+esc(w.date)+'）</div>'
+      + '</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function workStart(){
+  workDraft = { pattern:"", when:"", protect:"", thanks:"ずっとわたしを守ってくれて、ありがとう。", permit:"" };
+  // けはいの「いちばん多い気持ち」を初期候補にそっと入れる
+  const limit = new Date(); limit.setDate(limit.getDate()-30);
+  const counts = {};
+  (data.entries||[]).filter(e=> new Date(e.date) >= limit).forEach(e=> (e.moods||[]).forEach(id=> counts[id]=(counts[id]||0)+1));
+  const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  if(top){ const m = MOODS.find(x=>x.id===top[0]); if(m) workDraft.pattern = m.label; }
+  workStep = 1;
+  document.getElementById("workHome").style.display = "none";
+  document.getElementById("workFlow").style.display = "block";
+  renderWorkStep();
+  window.scrollTo({top:0});
+}
+
+function renderWorkStep(){
+  // dots + label
+  document.getElementById("stepDots").innerHTML = [1,2,3].map(n=>
+    '<div class="step-dot '+(n===workStep?"on":(n<workStep?"done":""))+'"></div>'
+  ).join("");
+  const labels = {1:"① ほりさげる", 2:"② 書きかえる", 3:"③ なじませる"};
+  document.getElementById("stepLabel").textContent = labels[workStep];
+
+  const body = document.getElementById("stepBody");
+  const nav = document.getElementById("stepNav");
+
+  if(workStep === 1){
+    body.innerHTML =
+      '<p class="work-q">どの食べ方を、いっしょに見つめる？</p>'
+      + '<p class="work-hint">責めるためじゃなく、知るために。ぴんとくるものをひとつ。</p>'
+      + '<div class="chips" id="wPatternChips" style="margin-bottom:10px;">'
+      + MOODS.map(m=>'<button type="button" class="chip'+(workDraft.pattern===m.label?" on":"")+'" data-label="'+esc(m.label)+'">'+esc(m.label)+'</button>').join("")
+      + '</div>'
+      + '<div class="field"><input type="text" id="wPatternFree" placeholder="じぶんの言葉で書いてもOK" value="'+esc(workDraft._free||"")+'"></div>'
+      + '<div class="field"><label>いつごろからの癖だろう？（わからなければ、とばしてOK）</label>'
+      + '<input type="text" id="wWhen" placeholder="例：子どものころ／仕事が忙しくなってから" value="'+esc(workDraft.when)+'"></div>'
+      + '<div class="field"><label>その食べ方は、あなたの何を守ってくれてた？</label>'
+      + '<textarea id="wProtect" placeholder="例：さみしさをまぎらわせてくれた／がんばる自分をなだめてくれた">'+esc(workDraft.protect)+'</textarea></div>'
+      + '<p class="note" id="workMsg" style="color:#C4707B;min-height:1.2em;"></p>';
+    nav.innerHTML = '<button class="btn ghost" onclick="workBackHome()">またあとで</button>'
+      + '<button class="btn" onclick="workNext()">つぎへ</button>';
+    document.querySelectorAll("#wPatternChips .chip").forEach(c=>{
+      c.addEventListener("click",()=>{
+        const on = c.classList.contains("on");
+        document.querySelectorAll("#wPatternChips .chip").forEach(x=>x.classList.remove("on"));
+        if(!on){ c.classList.add("on"); workDraft.pattern = c.dataset.label; }
+        else workDraft.pattern = "";
+      });
+    });
+  }
+  else if(workStep === 2){
+    body.innerHTML =
+      '<p class="work-hint" style="margin-bottom:14px;">見つめているのは、<b>'+esc(workDraft.pattern||"あなたの食べ方")+'</b>。この癖は、あなたを守ろうとしてくれていたもの。まず、お礼から。</p>'
+      + '<div class="field"><label>守ってくれていたことに、ひとこと。</label>'
+      + '<textarea id="wThanks">'+esc(workDraft.thanks)+'</textarea></div>'
+      + '<p class="work-q">これからの自分にかける、新しい「許可のことば」。</p>'
+      + '<p class="work-hint">古い思い込みの上に、そっと重ねていく言葉。下から選んで、じぶん用に直してもいいよ。</p>'
+      + '<div class="tmpl-chips" id="wTmpl">'
+      + PERMIT_TMPL.map(t=>'<button type="button" class="chip" data-t="'+esc(t)+'">'+esc(t)+'</button>').join("")
+      + '</div>'
+      + '<div class="field"><textarea id="wPermit" placeholder="わたしは、〜していい。">'+esc(workDraft.permit)+'</textarea></div>'
+      + '<p class="note" id="workMsg" style="color:#C4707B;min-height:1.2em;"></p>';
+    nav.innerHTML = '<button class="btn ghost" onclick="workPrev()">もどる</button>'
+      + '<button class="btn" onclick="workNext()">つぎへ</button>';
+    document.querySelectorAll("#wTmpl .chip").forEach(c=>{
+      c.addEventListener("click",()=>{ document.getElementById("wPermit").value = c.dataset.t; });
+    });
+  }
+  else if(workStep === 3){
+    body.innerHTML =
+      '<p class="work-hint" style="text-align:center;">あなたが決めた、あたらしいことば。</p>'
+      + '<div class="permit-preview">「'+esc(workDraft.permit)+'」</div>'
+      + '<div class="learn-body" style="display:block;padding:0;">'
+      + '<div class="try"><b>🌱 これからのこと</b>この言葉を、ホームの「きょうのことば」に時々まぜて、毎日そっと届けます。「ほどく」からいつでも見返せるよ。<br><br>一度で書き換わらなくてもだいじょうぶ。目にするたび、少しずつなじんでいくみたい。</div>'
+      + '</div>';
+    nav.innerHTML = '<button class="btn ghost" onclick="workPrev()">もどる</button>'
+      + '<button class="btn" onclick="saveWork()">この言葉を、むかえる</button>';
+  }
+}
+
+function readStep(){
+  if(workStep === 1){
+    const free = (document.getElementById("wPatternFree")||{}).value;
+    workDraft._free = free ? free.trim() : "";
+    if(workDraft._free) workDraft.pattern = workDraft._free;
+    const wn = document.getElementById("wWhen"); if(wn) workDraft.when = wn.value.trim();
+    const wp = document.getElementById("wProtect"); if(wp) workDraft.protect = wp.value.trim();
+  }else if(workStep === 2){
+    const tt = document.getElementById("wThanks"); if(tt) workDraft.thanks = tt.value.trim();
+    const pp = document.getElementById("wPermit"); if(pp) workDraft.permit = pp.value.trim();
+  }
+}
+function workMsg(t){ const m = document.getElementById("workMsg"); if(m) m.textContent = t; }
+
+function workNext(){
+  readStep();
+  if(workStep === 1){
+    if(!workDraft.pattern){ workMsg("どれかひとつ選ぶか、じぶんの言葉で書いてみてね🌱"); return; }
+    workStep = 2; renderWorkStep(); window.scrollTo({top:0});
+  }else if(workStep === 2){
+    if(!workDraft.permit){ workMsg("あなたのことばを、ひとことだけ書いてみてね🌱"); return; }
+    workStep = 3; renderWorkStep(); window.scrollTo({top:0});
+  }
+}
+function workPrev(){ readStep(); workStep--; if(workStep<1) workStep=1; renderWorkStep(); window.scrollTo({top:0}); }
+function workBackHome(){ workDraft = null; renderWorkHome(); window.scrollTo({top:0}); }
+
+function saveWork(){
+  data.works.push({
+    id: Date.now(),
+    date: todayStr(),
+    pattern: workDraft.pattern,
+    when: workDraft.when,
+    protect: workDraft.protect,
+    thanks: workDraft.thanks,
+    permit: workDraft.permit
+  });
+  save();
+  workDraft = null;
+  renderWorkHome();
+  renderHome();
+  window.scrollTo({top:0});
+}
+function delWork(id){
+  if(!confirm("この「ことば」を消しますか？")) return;
+  data.works = data.works.filter(w=>w.id!==id);
+  save(); renderWorkHome(); renderHome();
+}
 
 /* ================= init ================= */
 initForm();

@@ -1,6 +1,6 @@
 // たべごころ。service worker（ネット優先・オフライン時はキャッシュ）
 // 大きく更新したら CACHE 名を tabegokoro-v2 等に上げること
-const CACHE = "tabegokoro-v1";
+const CACHE = "tabegokoro-v2";
 
 self.addEventListener("install", (e) => {
   self.skipWaiting();
