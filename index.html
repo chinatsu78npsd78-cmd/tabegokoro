@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>たべごころ｜私専用の潜在意識ダイエット</title>
+<style>
+  :root{
+    --bg:#FFF8F2;
+    --card:#FFFFFF;
+    --ink:#6B5B54;
+    --ink-soft:#9A8B83;
+    --pink:#E8A0A8;
+    --pink-soft:#FBE9EB;
+    --lav:#B9A7D0;
+    --lav-soft:#F1ECF8;
+    --green:#A8C8A0;
+    --green-soft:#EDF5EA;
+    --gold:#E5C07B;
+    --line:#F0E4DA;
+    --shadow:0 4px 16px rgba(160,120,100,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{font-size:16px;}
+  body{
+    font-family:"Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","Yu Gothic",'Segoe UI',sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.75;
+    min-height:100vh;
+  }
+  .wrap{max-width:480px;margin:0 auto;padding:20px 18px 96px;}
+  header{ text-align:center; padding:14px 0 10px;}
+  .logo{font-size:1.5rem;font-weight:700;letter-spacing:.12em;color:var(--ink);}
+  .logo .dot{color:var(--pink);}
+  .tagline{font-size:.78rem;color:var(--ink-soft);margin-top:2px;letter-spacing:.05em;}
+
+  /* --- tabs --- */
+  nav{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .nav-inner{max-width:480px;margin:0 auto;display:flex;}
+  .nav-btn{
+    flex:1;border:none;background:none;padding:9px 0 7px;cursor:pointer;
+    font-family:inherit;color:var(--ink-soft);font-size:.68rem;letter-spacing:.03em;
+    display:flex;flex-direction:column;align-items:center;gap:1px;
+  }
+  .nav-btn .ic{font-size:1.35rem;line-height:1.2;filter:grayscale(.6);opacity:.65;transition:.2s;}
+  .nav-btn.active{color:var(--pink);font-weight:700;}
+  .nav-btn.active .ic{filter:none;opacity:1;transform:translateY(-2px);}
+
+  .view{display:none;animation:fade .35s ease;}
+  .view.show{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .card{
+    background:var(--card);border-radius:20px;box-shadow:var(--shadow);
+    padding:20px 18px;margin-bottom:16px;border:1px solid #fff;
+  }
+  h2{font-size:1.02rem;letter-spacing:.06em;margin-bottom:10px;color:var(--ink);}
+  h2 .em{margin-right:6px;}
+  .note{font-size:.78rem;color:var(--ink-soft);}
+
+  /* --- home --- */
+  .today-date{text-align:center;font-size:.82rem;color:var(--ink-soft);letter-spacing:.08em;margin-bottom:10px;}
+  .kotoba-card{
+    background:linear-gradient(160deg,#FFF3F0,#F4EEFA);
+    border-radius:22px;padding:28px 22px;text-align:center;margin-bottom:16px;
+    box-shadow:var(--shadow);border:1px solid #fff;
+  }
+  .kotoba-label{font-size:.72rem;letter-spacing:.25em;color:var(--lav);font-weight:700;margin-bottom:12px;}
+  .kotoba-main{font-size:1.12rem;font-weight:700;line-height:2;color:#7A6660;}
+  .kotoba-sub{font-size:.82rem;color:var(--ink-soft);margin-top:12px;line-height:1.9;}
+  .today-summary{display:flex;gap:10px;}
+  .mini{
+    flex:1;background:var(--card);border-radius:16px;padding:14px 10px;text-align:center;
+    box-shadow:var(--shadow);border:1px solid #fff;
+  }
+  .mini .num{font-size:1.3rem;font-weight:700;color:var(--pink);}
+  .mini .lbl{font-size:.68rem;color:var(--ink-soft);}
+  .btn{
+    display:block;width:100%;border:none;cursor:pointer;font-family:inherit;
+    background:var(--pink);color:#fff;font-size:.95rem;font-weight:700;letter-spacing:.1em;
+    padding:14px;border-radius:999px;box-shadow:0 6px 14px rgba(232,160,168,.35);
+    transition:.15s;margin-top:8px;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:#fff;color:var(--pink);border:1.5px solid var(--pink-soft);box-shadow:none;}
+  .btn.lav{background:var(--lav);box-shadow:0 6px 14px rgba(185,167,208,.35);}
+
+  /* --- record form --- */
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:.8rem;font-weight:700;color:var(--ink-soft);margin-bottom:7px;letter-spacing:.05em;}
+  input[type=text],input[type=time],textarea{
+    width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;
+    font-family:inherit;font-size:1rem;color:var(--ink);background:#FFFDFB;outline:none;
+  }
+  input:focus,textarea:focus{border-color:var(--pink);}
+  textarea{resize:none;height:74px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    border:1.5px solid var(--line);background:#FFFDFB;border-radius:999px;
+    padding:8px 13px;font-family:inherit;font-size:.85rem;color:var(--ink);cursor:pointer;transition:.15s;
+  }
+  .chip.on{background:var(--pink-soft);border-color:var(--pink);color:#C4707B;font-weight:700;}
+  .hearts{display:flex;gap:6px;}
+  .heart{font-size:1.55rem;cursor:pointer;filter:grayscale(1);opacity:.35;transition:.15s;border:none;background:none;}
+  .heart.on{filter:none;opacity:1;transform:scale(1.08);}
+  .after-save{
+    display:none;background:var(--lav-soft);border-radius:16px;padding:16px;margin-top:14px;
+    font-size:.88rem;line-height:1.9;color:#7A6A8A;animation:fade .4s ease;
+  }
+  .after-save.show{display:block;}
+  .after-save b{display:block;margin-bottom:4px;}
+
+  /* --- log list --- */
+  .day-block{margin-bottom:18px;}
+  .day-head{font-size:.8rem;font-weight:700;color:var(--ink-soft);letter-spacing:.06em;margin-bottom:8px;}
+  .entry{
+    background:var(--card);border-radius:16px;box-shadow:var(--shadow);border:1px solid #fff;
+    padding:13px 15px;margin-bottom:9px;display:flex;gap:12px;align-items:flex-start;
+  }
+  .entry .t{font-size:.78rem;color:var(--ink-soft);min-width:44px;padding-top:2px;}
+  .entry .body{flex:1;}
+  .entry .what{font-weight:700;font-size:.95rem;}
+  .entry .meta{font-size:.78rem;color:var(--ink-soft);margin-top:2px;}
+  .entry .memo{font-size:.8rem;color:var(--ink-soft);margin-top:4px;background:#FFF8F2;border-radius:10px;padding:6px 10px;}
+  .entry .del{border:none;background:none;color:#D8C7BD;font-size:.9rem;cursor:pointer;padding:2px 4px;}
+  .empty{
+    text-align:center;color:var(--ink-soft);font-size:.85rem;padding:26px 10px;line-height:2;
+  }
+
+  /* --- pattern --- */
+  .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .bar-lbl{font-size:.82rem;min-width:118px;}
+  .bar-track{flex:1;height:14px;background:#F6EDE6;border-radius:999px;overflow:hidden;}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--lav));border-radius:999px;transition:width .6s ease;}
+  .bar-num{font-size:.75rem;color:var(--ink-soft);min-width:34px;text-align:right;}
+  .pattern-msg{
+    background:var(--green-soft);border-radius:16px;padding:16px;font-size:.88rem;line-height:2;color:#5F7558;margin-top:14px;
+  }
+  .pattern-msg b{display:block;margin-bottom:4px;}
+
+  /* --- learn --- */
+  .learn-card{
+    background:var(--card);border-radius:18px;box-shadow:var(--shadow);border:1px solid #fff;
+    margin-bottom:12px;overflow:hidden;
+  }
+  .learn-head{
+    width:100%;border:none;background:none;font-family:inherit;cursor:pointer;
+    display:flex;align-items:center;gap:10px;padding:16px;text-align:left;
+  }
+  .learn-head .em{font-size:1.5rem;}
+  .learn-head .tt{flex:1;font-size:.93rem;font-weight:700;color:var(--ink);line-height:1.6;}
+  .learn-head .arrow{color:var(--ink-soft);transition:.25s;font-size:.8rem;}
+  .learn-card.open .arrow{transform:rotate(90deg);}
+  .learn-body{display:none;padding:0 18px 18px;font-size:.88rem;line-height:2;color:#7A6A62;}
+  .learn-card.open .learn-body{display:block;animation:fade .3s ease;}
+  .learn-body .try{
+    background:var(--pink-soft);border-radius:14px;padding:12px 14px;margin-top:12px;font-size:.85rem;color:#B06A75;
+  }
+  .learn-body .try b{display:block;margin-bottom:3px;}
+
+  /* --- watashi (my story) --- */
+  .tl{position:relative;padding-left:22px;}
+  .tl::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--pink-soft);border-radius:2px;}
+  .tl-item{position:relative;margin-bottom:18px;}
+  .tl-item::before{content:"";position:absolute;left:-21px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--pink);border:2px solid #fff;box-shadow:0 0 0 2px var(--pink-soft);}
+  .tl-age{font-size:.72rem;font-weight:700;color:var(--lav);letter-spacing:.08em;}
+  .tl-tt{font-size:.9rem;font-weight:700;color:var(--ink);margin:2px 0 3px;line-height:1.7;}
+  .tl-body{font-size:.82rem;color:var(--ink-soft);line-height:1.9;}
+  .shoho{
+    background:linear-gradient(160deg,#FFF3F0,#F4EEFA);border-radius:16px;padding:16px 18px;
+    margin-bottom:10px;text-align:center;font-weight:700;color:#7A6660;font-size:.95rem;line-height:2;
+    box-shadow:var(--shadow);border:1px solid #fff;
+  }
+
+  footer{
+    text-align:center;font-size:.7rem;color:#C9BAB1;line-height:1.9;padding:22px 14px 8px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">たべごころ<span class="dot">。</span></div>
+    <div class="tagline">なつこさん専用｜潜在意識からやさしくととのう記録帳</div>
+  </header>
+
+  <!-- ============ HOME ============ -->
+  <section id="view-home" class="view show">
+    <div class="today-date" id="todayDate"></div>
+    <div class="kotoba-card">
+      <div class="kotoba-label">きょうのことば</div>
+      <div class="kotoba-main" id="kotobaMain"></div>
+      <div class="kotoba-sub" id="kotobaSub"></div>
+    </div>
+    <div class="today-summary">
+      <div class="mini"><div class="num" id="sumCount">0</div><div class="lbl">きょうの記録</div></div>
+      <div class="mini"><div class="num" id="sumStreak">0</div><div class="lbl">きろくした日数</div></div>
+      <div class="mini"><div class="num" id="sumTotal">0</div><div class="lbl">ぜんぶの記録</div></div>
+    </div>
+    <button class="btn" onclick="switchView('record')">📝 たべたものを記録する</button>
+    <button class="btn lav" onclick="switchView('learn')">🌱 こころと食のしくみを読む</button>
+  </section>
+
+  <!-- ============ RECORD ============ -->
+  <section id="view-record" class="view">
+    <div class="card">
+      <h2><span class="em">📝</span>たべたものを記録</h2>
+      <p class="note" style="margin-bottom:14px;">「何を」より「どんな気持ちで」がたからもの。ざっくりでだいじょうぶ。</p>
+      <div class="field">
+        <label>たべたもの</label>
+        <input type="text" id="inWhat" placeholder="例：チョコ2つ、夜ごはんのカレー">
+      </div>
+      <div class="field">
+        <label>時間</label>
+        <input type="time" id="inTime">
+      </div>
+      <div class="field">
+        <label>そのとき、どんな気持ちだった？（いくつでも）</label>
+        <div class="chips" id="moodChips"></div>
+      </div>
+      <div class="field">
+        <label>たべたあとの満足感</label>
+        <div class="hearts" id="hearts"></div>
+      </div>
+      <div class="field">
+        <label>ひとことメモ（あってもなくても）</label>
+        <textarea id="inMemo" placeholder="例：仕事おわりにごほうび。おいしかった"></textarea>
+      </div>
+      <button class="btn" id="saveBtn">記録する</button>
+      <div class="after-save" id="afterSave"></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="em">📖</span>これまでの記録</h2>
+      <div id="logList"></div>
+    </div>
+  </section>
+
+  <!-- ============ PATTERN ============ -->
+  <section id="view-pattern" class="view">
+    <div class="card">
+      <h2><span class="em">🔍</span>わたしの食べ方のけはい</h2>
+      <p class="note" style="margin-bottom:14px;">直近30日の記録から、食べるときにいっしょにいた気持ちをながめます。</p>
+      <div id="patternBars"></div>
+      <div class="pattern-msg" id="patternMsg"></div>
+    </div>
+    <div class="card">
+      <h2><span class="em">🕰️</span>時間帯のけはい</h2>
+      <div id="timeBars"></div>
+    </div>
+  </section>
+
+  <!-- ============ LEARN ============ -->
+  <section id="view-learn" class="view">
+    <div class="card" style="background:linear-gradient(160deg,#F4EEFA,#FFF3F0);">
+      <h2><span class="em">🌱</span>こころと食のしくみ</h2>
+      <p class="note">感情や思考は、体の仕組みを通して「食べたい」「ためこむ」につながっています。知ることは、責めることをやめる第一歩。気になるところから、どうぞ。</p>
+    </div>
+    <div id="learnList"></div>
+  </section>
+
+  <!-- ============ WATASHI ============ -->
+  <section id="view-watashi" class="view">
+    <div class="card" style="background:linear-gradient(160deg,#FFF3F0,#F4EEFA);">
+      <h2><span class="em">💗</span>わたしのものがたり</h2>
+      <p class="note">なつこさんの自分史から、食と心の糸だけをたどった下書きです。読んで「ちがうな」と感じたところは、その感覚のほうが正解。いつでも書き直せます。このページは、あいことばを知っているなつこさんにだけ開きます。</p>
+    </div>
+
+    <div class="card" id="watashiLockCard">
+      <h2><span class="em">🔑</span>あいことば</h2>
+      <p class="note" style="margin-bottom:12px;">ここから先は、なつこさんだけのページ。あいことばを入れてね。</p>
+      <div class="field"><input type="text" id="passInput" placeholder="あいことば" autocomplete="off"></div>
+      <button class="btn" id="unlockBtn">ひらく</button>
+      <p class="note" id="lockMsg" style="margin-top:10px;"></p>
+    </div>
+
+    <div id="watashiBody" style="display:none;">
+      <div class="card">
+        <h2><span class="em">🍽️</span>いまの、わたしの食のリズム</h2>
+        <p class="note" style="line-height:2;" id="rhythmNote"></p>
+      </div>
+
+      <div class="card">
+        <h2><span class="em">📜</span>食と心の年表</h2>
+        <div class="tl" id="storyTl"></div>
+      </div>
+
+      <div class="card" style="padding-bottom:8px;background:none;box-shadow:none;border:none;">
+        <h2><span class="em">🔮</span>わたし専用のよみとき（仮説）</h2>
+        <p class="note" style="margin-bottom:12px;">どれも「決めつけ」ではなく、置いておく問い。ぴんとくるものだけ、受けとってください。</p>
+      </div>
+      <div id="hypoList"></div>
+
+      <div class="card">
+        <h2><span class="em">💌</span>わたしへの処方せん</h2>
+        <div id="shohoBox"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    たべごころ。は医療診断ではありません。<br>
+    体や心のつらさが続くときは、お医者さんにも頼ってね。<br>
+    記録はこのスマホ（ブラウザ）の中にだけ保存されます。
+  </footer>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <button class="nav-btn active" data-v="home"><span class="ic">🏠</span>きょう</button>
+    <button class="nav-btn" data-v="record"><span class="ic">📝</span>きろく</button>
+    <button class="nav-btn" data-v="pattern"><span class="ic">🔍</span>けはい</button>
+    <button class="nav-btn" data-v="learn"><span class="ic">🌱</span>しくみ</button>
+    <button class="nav-btn" data-v="watashi"><span class="ic">💗</span>わたし</button>
+  </div>
+</nav>
+
+<script>
+"use strict";
+/* ================= data ================= */
+const KEY = "tabegokoro_v1";
+
+const MOODS = [
+  { id:"onaka",  label:"🍚 おなかがすいて" },
+  { id:"hotto",  label:"🫶 ほっとしたくて" },
+  { id:"stress", label:"💦 イライラ・ストレス" },
+  { id:"samishi",label:"🌙 さみしくて" },
+  { id:"gohobi", label:"🎁 ごほうびに" },
+  { id:"tanoshi",label:"😊 たのしくて" },
+  { id:"nantonaku",label:"☁️ なんとなく・くせで" },
+  { id:"tsukare",label:"🛌 つかれて" }
+];
+
+/* 保存直後にそっと出す、気持ち別のことば */
+const MOOD_WORDS = {
+  onaka:   { t:"おなかの声で食べられたね", b:"体の「すいた」に応えてあげられるのは、ちゃんと自分とつながっているしるしみたい。" },
+  hotto:   { t:"ほっとしたかったんだね", b:"食べることで自分をなだめてきたのは、今日までがんばってきた証拠かも。責めなくてだいじょうぶ。" },
+  stress:  { t:"イライラの中、よく気づけたね", b:"ストレスのとき食べたくなるのは体の仕組み。気づいて記録できた時点で、もう流れは変わりはじめているよ。" },
+  samishi: { t:"さみしさに気づけたね", b:"口さみしさの奥に「さみしさ」を見つけられるのは、すごい感度。今夜は自分にやさしい言葉をひとつどうぞ。" },
+  gohobi:  { t:"ごほうび、いいね", b:"自分をねぎらう気持ちはたいせつ。味わって食べたなら、それはもう栄養になっているみたい。" },
+  tanoshi: { t:"たのしく食べられたね", b:"たのしい食事は心の栄養。この感じ、覚えておこうね。" },
+  nantonaku:{ t:"「なんとなく」に気づけたね", b:"無意識のくせに気づけた瞬間が、潜在意識の書きかわりはじめ。それだけで今日は十分。" },
+  tsukare: { t:"つかれてたんだね", b:"つかれると甘いものがほしくなるのは自然な反応。食べたことより、つかれに気づけたことをたいせつに。" }
+};
+
+/* パターン画面で使う、気持ち別のよみとき */
+const MOOD_INSIGHT = {
+  onaka:   "体の空腹にそって食べられている記録。とても自然なリズムみたい。",
+  hotto:   "「安心したいとき」に食が動きやすいみたい。食べる前に、あたたかい飲みものや深呼吸をひとつはさむと、心が先に少しゆるむかも。",
+  stress:  "ストレスと食がつながりやすいみたい。これは意志の弱さではなく、体がストレスホルモンに応えている自然な反応。「しくみ」のカードもよかったら読んでみてね。",
+  samishi: "さみしさと食がつながりやすいみたい。口さみしさは、心が「つながりたい」と言っているサインのことも。だれかとの何気ないやりとりが、意外と効くみたい。",
+  gohobi:  "「ごほうび」で食が動くことが多いみたい。がんばりを食以外でもねぎらえると、選択肢が広がるかも（お風呂、好きな音楽、早く寝る、など）。",
+  tanoshi: "たのしみとして食を味わえている記録。これは減らさなくていい、たいせつな時間みたい。",
+  nantonaku:"「なんとなく」が多いのは、無意識のくせが動いているサイン。気づけているだけで、もう半分変わりはじめているよ。",
+  tsukare: "つかれと食がつながりやすいみたい。甘いものの前に5分だけ目を閉じる・横になるを試すと、体のほんとうの声が聞こえやすくなるかも。"
+};
+
+/* 日替わりのことば（日付でひとつ選ばれる） */
+const DAILY_WORDS = [
+  { m:"今日のわたしは、\n今日のままでちょうどいい。", s:"変わろうとする前に、まず今のわたしに「おつかれさま」を。" },
+  { m:"食べたい気持ちにも、\nちゃんと理由がある。", s:"理由ごとやさしく見つめられたら、それだけで潜在意識は安心しはじめます。" },
+  { m:"わたしの体は、\nいつもわたしの味方。", s:"ためこむのも、守ろうとしてくれているから。まず「ありがとう」から。" },
+  { m:"ゆっくり食べる。\nそれだけで体はよろこぶ。", s:"ひと口ごとに味わうと、満足のサインが届きやすくなるみたい。" },
+  { m:"責めない日は、\nそれだけでいい日。", s:"自分を責めない時間が長いほど、心はためこまなくてよくなっていきます。" },
+  { m:"「食べちゃった」じゃなくて\n「食べたんだね」でいい。", s:"言葉をひとつ変えるだけで、潜在意識の受けとり方が変わります。" },
+  { m:"満たされるほど、\n心も体も軽くなっていくみたい。", s:"がまんではなく、満たすことから始めていい。" },
+  { m:"今日は、水をひとくち\nていねいに飲んでみる。", s:"小さなていねいさが、体との仲直りのはじまり。" },
+  { m:"わたしは、\n安心していい。", s:"安心しているとき、体はためこむ理由をなくしていきます。" },
+  { m:"おなかがすくのは、\n生きているしるし。", s:"空腹をこわがらなくてだいじょうぶ。ちゃんと応えてあげよう。" },
+  { m:"昨日のわたしと、\nくらべなくていい。", s:"記録は採点表じゃなくて、わたしを知るためのおたより。" },
+  { m:"心が満ちる食事は、\nぜんぶ栄養。", s:"たのしく食べたものは、心の栄養にもなっているみたい。" },
+  { m:"がんばった日ほど、\nやさしくねむる。", s:"ねむりは、いちばん静かなダイエット。今夜は早めにおふとんへ。" },
+  { m:"わたしの「ちょうどいい」は\nわたしが決めていい。", s:"だれかの正解じゃなく、わたしの心地よさを基準に。" },
+  { m:"食べる前に、\nひと呼吸。", s:"「今、どんな気持ち？」と聞いてあげるだけで、選び方が変わりはじめます。" },
+  { m:"変わらない日も、\nちゃんと進んでいる。", s:"潜在意識の書きかわりは、静かにゆっくり進むもの。あせらなくていい。" },
+  { m:"わたしは食べることを\n楽しんでいい。", s:"「いけないこと」にしないほど、食は暴れなくなるみたい。" },
+  { m:"体の声を聞ける日は、\nいい日。", s:"「すいた」「もういいかな」。小さな声に気づけたら、それが今日の花まる。" },
+  { m:"さみしい夜は、\n食べる前にひとこと。", s:"「さみしいね」って自分に言ってあげるだけで、半分やわらぐことがあります。" },
+  { m:"わたしのペースで、\nわたしはととのう。", s:"早さより、やさしさ。それがいちばん遠くまで行ける道みたい。" },
+  { m:"「まあいっか」は\n魔法のことば。", s:"完璧じゃない日を許すたび、続ける力がたまっていきます。" },
+  { m:"今日のごはんに、\nひとつだけ彩りを。", s:"赤・緑・黄。目でよろこぶと、心も満ちやすくなるみたい。" },
+  { m:"わたしは、\n受けとっていい。", s:"ごはんも、やさしさも、休みも。受けとるほど、心は軽くなる。" },
+  { m:"食後の「おいしかった」を\n言葉にしてみる。", s:"満足を言葉にすると、潜在意識に「足りている」が届きます。" },
+  { m:"体は今日も、\nわたしのために働いてくれた。", s:"消化も呼吸も、ぜんぶ味方の仕事。ねぎらいをひとつ。" },
+  { m:"減らすより、\nふやすことから。", s:"睡眠、水、深呼吸、安心。ふえるほど、自然とととのっていくみたい。" },
+  { m:"鏡とにらめっこするより、\nやさしい記録。", s:"数字やうつりこみより、今日の気持ちをひとつ書くほうが、ずっと効くみたい。" },
+  { m:"わたしの食べ方は、\nわたしの歴史。", s:"今日までを否定しない。ここからを、いっしょに書きかえていこう。" },
+  { m:"ひとりでがんばらなくて\nだいじょうぶ。", s:"つらさが続くときは、人にもお医者さんにも頼っていいからね。" },
+  { m:"今日も記録できたら、\nそれで満点。", s:"続いているのは、わたしがわたしをあきらめていない証拠。" },
+  { m:"安心が、いちばんの\nダイエット。", s:"心がゆるむと、体もためこむ理由を手放していきます。" }
+];
+
+/* しくみカード */
+const LEARN = [
+  { em:"💦", tt:"ストレスで食べたくなるのは、意志が弱いからじゃない",
+    body:"強いストレスが続くと、体は「コルチゾール」というストレスホルモンを出します。これは体を守るための仕組みなのだけど、続くと食欲が強まり、特に甘いもの・脂っこいものがほしくなり、おなかまわりに脂肪をためこみやすくなると言われています。<br><br>つまり「ストレスがたまると食べたくなって太りやすい」のは、体が正直に働いている結果。意志の弱さの問題ではないみたい。",
+    try:"食べる前に、ゆっくり3回だけ深呼吸。それだけでも体は「安全だよ」を受けとりはじめます。" },
+  { em:"🚫", tt:"「食べちゃダメ」と思うほど、食べたくなるしくみ",
+    body:"潜在意識は「〜しない」という否定の形が苦手だと言われます。「チョコを食べちゃダメ」と唱えるほど、頭の中はチョコでいっぱいに。さらに「禁止されるほどほしくなる」心の性質もあって、がまんは反動の食べすぎにつながりやすいのです。<br><br>ダイエットのくり返しで食欲が暴れやすくなるのは、あなたのせいではなく、この仕組みのせいみたい。",
+    try:"「ダメ」の代わりに「食べてもいいよ。どんな気持ちか見てようね」に言いかえてみる。許可のほうが、潜在意識には届きやすいみたい。" },
+  { em:"🫶", tt:"感情で食べるのは、心を守る「戦略」だった",
+    body:"さみしいとき、不安なとき、がんばりすぎたとき。食べることは、いちばん手軽に自分をなだめる方法です。子どものころから「食べると落ちつく」を積み重ねてきた人ほど、心がゆれたとき自然と食に手がのびます。<br><br>それは「今日まで自分を守ってきた、けなげな戦略」。まちがいではないから、やめさせようとしなくてだいじょうぶ。戦略に気づいて「守ってくれてありがとう」と言えたとき、少しずつ別の方法も選べるようになっていくみたい。",
+    try:"食べたくなったら「今、なにをなだめたい？」とひとこと聞いてあげる。答えが出なくても、聞くだけで十分。" },
+  { em:"🌙", tt:"口さみしさの正体は、「さみしさ」のことがある",
+    body:"人はつながりを感じると、心を落ちつかせるホルモン（オキシトシンなど）が働くと言われています。それが足りない夜、体はてっとり早い安心として「食べること」を選びがち。夜のおやつが止まらない日は、体がおなかではなく、心のつながりを求めているのかもしれません。",
+    try:"食べる前に、だれかにひとことメッセージを送ってみる。ペットをなでる、ぬくもりのある飲みものでもOK。心があたたまると、口さみしさは静かになることがあるみたい。" },
+  { em:"🛌", tt:"ねむりが足りないと、食欲のブレーキがきかなくなる",
+    body:"睡眠が足りないと、食欲を強めるホルモン（グレリン）がふえ、満腹を知らせるホルモン（レプチン）がへると言われています。つまり寝不足の日は、同じ量を食べても「まだ食べたい」と感じやすい状態。<br><br>「食べすぎた翌日」をよく見ると、その前の夜にあまり眠れていないこと、意外と多いかもしれません。",
+    try:"食事をけずるより、今夜15分早くおふとんへ。ねむりは、いちばん静かなダイエットみたい。" },
+  { em:"🌀", tt:"「また食べちゃった…」のループは、責めるのをやめると切れはじめる",
+    body:"食べたあとに自分を責めると、心は強いストレス状態になります。するとまたストレスホルモンが出て、なだめるためにまた食べたくなる…。この「食べる→責める→また食べる」のループが、いちばん体をためこませると言われています。<br><br>逆にいうと、「責める」をやめるだけでループは切れはじめる。食べる量を変える前に、責める量をへらすのが近道みたい。",
+    try:"食べすぎた日は「食べたんだね。なにかあった？」とだけ聞いて、おしまいにする。反省会はしない。" },
+  { em:"🧠", tt:"食べ方のほとんどは、潜在意識。だから「気づく」だけで変わりはじめる",
+    body:"毎日の食べ方のほとんどは、考えて選んでいるようで、実は無意識のくせ（潜在意識）が動かしています。だから意志の力でねじふせようとしても長続きしにくいのです。<br><br>潜在意識のくせを書きかえる第一歩は、がんばることではなく「気づくこと」。このアプリの記録は、そのためのもの。「なんとなく食べてたな」に気づけた瞬間、無意識だったものが意識にのぼり、選び直せるようになっていきます。",
+    try:"記録は完璧じゃなくていい。1日1回、どれか1食だけでも「どんな気持ちだった？」を残せたら満点。" },
+  { em:"🌸", tt:"安心しているとき、体はためこむ理由をなくしていく",
+    body:"体は「危機だ」と感じるとエネルギーをためこみ、「安全だ」と感じると心地よく燃やすモードになると言われています。リラックスしているとき（副交感神経が働くとき)は消化もスムーズで、少ない量でも満足を感じやすくなるみたい。<br><br>だから、あたたかいお風呂、深呼吸、ゆっくり食べること、自分にやさしい言葉。遠回りに見えるこれらが、じつは体がいちばんよろこぶ近道だったりします。",
+    try:"今日のごはん、最初のひと口だけ目を閉じて味わってみる。「安全・安心」のサインが体に届きます。" }
+];
+
+/* わたしページの中身（あいことばで開く、カギ付きデータ。生の文章はここには置かない） */
+const WATASHI_LOCK = {
+  salt: "q62ziWvjpmlYNfBqf4GOyA==",
+  iv: "8nqzsfUMdKYd2vZX",
+  data: "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"
+};
+
+/* ================= state ================= */
+let data = load();
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(KEY));
+    if(d && Array.isArray(d.entries)) return d;
+  }catch(e){}
+  return { entries: [] };
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
+
+/* ================= utils ================= */
+function todayStr(d){
+  const x = d || new Date();
+  return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");
+}
+function jpDate(str){
+  const [y,m,d] = str.split("-").map(Number);
+  const w = ["日","月","火","水","木","金","土"][new Date(y,m-1,d).getDay()];
+  return m+"月"+d+"日（"+w+"）";
+}
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* ================= views ================= */
+const views = ["home","record","pattern","learn","watashi"];
+function switchView(v){
+  views.forEach(x=>{
+    document.getElementById("view-"+x).classList.toggle("show", x===v);
+  });
+  document.querySelectorAll(".nav-btn").forEach(b=>{
+    b.classList.toggle("active", b.dataset.v===v);
+  });
+  if(v==="home") renderHome();
+  if(v==="record") renderLog();
+  if(v==="pattern") renderPattern();
+  window.scrollTo({top:0});
+}
+document.querySelectorAll(".nav-btn").forEach(b=>{
+  b.addEventListener("click",()=>switchView(b.dataset.v));
+});
+
+/* ================= home ================= */
+function renderHome(){
+  const t = todayStr();
+  document.getElementById("todayDate").textContent = jpDate(t);
+  const d = new Date();
+  const seed = d.getFullYear()*372 + (d.getMonth()+1)*31 + d.getDate();
+  const w = DAILY_WORDS[seed % DAILY_WORDS.length];
+  document.getElementById("kotobaMain").innerHTML = esc(w.m).replace(/\n/g,"<br>");
+  document.getElementById("kotobaSub").textContent = w.s;
+
+  const todays = data.entries.filter(e=>e.date===t);
+  document.getElementById("sumCount").textContent = todays.length;
+  document.getElementById("sumTotal").textContent = data.entries.length;
+  document.getElementById("sumStreak").textContent = new Set(data.entries.map(e=>e.date)).size;
+}
+
+/* ================= record ================= */
+let selMoods = [];
+let selHeart = 0;
+
+function initForm(){
+  const chipBox = document.getElementById("moodChips");
+  MOODS.forEach(m=>{
+    const b = document.createElement("button");
+    b.type="button"; b.className="chip"; b.textContent=m.label; b.dataset.id=m.id;
+    b.addEventListener("click",()=>{
+      if(selMoods.includes(m.id)) selMoods = selMoods.filter(x=>x!==m.id);
+      else selMoods.push(m.id);
+      b.classList.toggle("on");
+    });
+    chipBox.appendChild(b);
+  });
+  const hb = document.getElementById("hearts");
+  for(let i=1;i<=5;i++){
+    const h = document.createElement("button");
+    h.type="button"; h.className="heart"; h.textContent="💗"; h.dataset.n=i;
+    h.addEventListener("click",()=>{
+      selHeart = (selHeart===i)? 0 : i;
+      document.querySelectorAll(".heart").forEach(x=>{
+        x.classList.toggle("on", Number(x.dataset.n)<=selHeart);
+      });
+    });
+    hb.appendChild(h);
+  }
+  const now = new Date();
+  document.getElementById("inTime").value =
+    String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+}
+
+document.getElementById("saveBtn").addEventListener("click",()=>{
+  const what = document.getElementById("inWhat").value.trim();
+  if(!what){
+    document.getElementById("inWhat").focus();
+    document.getElementById("inWhat").placeholder = "ここに、たべたものをひとことだけ";
+    return;
+  }
+  const entry = {
+    id: Date.now(),
+    date: todayStr(),
+    time: document.getElementById("inTime").value || "",
+    what: what,
+    moods: [...selMoods],
+    heart: selHeart,
+    memo: document.getElementById("inMemo").value.trim()
+  };
+  data.entries.unshift(entry);
+  save();
+
+  /* ことばのおかえし */
+  const box = document.getElementById("afterSave");
+  let word;
+  if(entry.moods.length>0){
+    word = MOOD_WORDS[entry.moods[0]];
+  }else{
+    word = { t:"記録できたね", b:"書けた時点で今日は満点。気持ちの欄は、また今度でもだいじょうぶ。" };
+  }
+  box.innerHTML = "<b>🌷 "+esc(word.t)+"</b>"+esc(word.b);
+  box.classList.add("show");
+
+  /* reset */
+  document.getElementById("inWhat").value="";
+  document.getElementById("inMemo").value="";
+  selMoods=[]; selHeart=0;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));
+  document.querySelectorAll(".heart").forEach(h=>h.classList.remove("on"));
+  const now = new Date();
+  document.getElementById("inTime").value =
+    String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+
+  renderLog();
+  setTimeout(()=>box.classList.remove("show"), 8000);
+});
+
+function renderLog(){
+  const box = document.getElementById("logList");
+  if(data.entries.length===0){
+    box.innerHTML = '<div class="empty">まだ記録はありません。<br>最初のひとつを書けたら、それが今日の花まる🌸</div>';
+    return;
+  }
+  const byDay = {};
+  data.entries.forEach(e=>{ (byDay[e.date] = byDay[e.date]||[]).push(e); });
+  const days = Object.keys(byDay).sort().reverse().slice(0,14);
+  let html = "";
+  days.forEach(day=>{
+    html += '<div class="day-block"><div class="day-head">'+jpDate(day)+(day===todayStr()?"（きょう）":"")+'</div>';
+    byDay[day].sort((a,b)=> (b.time||"").localeCompare(a.time||""));
+    byDay[day].forEach(e=>{
+      const moodTxt = e.moods.map(id=>{
+        const m = MOODS.find(x=>x.id===id); return m? m.label : "";
+      }).join("　");
+      html += '<div class="entry">'
+        + '<div class="t">'+esc(e.time)+'</div>'
+        + '<div class="body"><div class="what">'+esc(e.what)+'</div>'
+        + (moodTxt? '<div class="meta">'+esc(moodTxt)+'</div>':'')
+        + (e.heart? '<div class="meta">満足感 '+"💗".repeat(e.heart)+'</div>':'')
+        + (e.memo? '<div class="memo">'+esc(e.memo)+'</div>':'')
+        + '</div>'
+        + '<button class="del" onclick="delEntry('+e.id+')">✕</button>'
+        + '</div>';
+    });
+    html += '</div>';
+  });
+  box.innerHTML = html;
+}
+function delEntry(id){
+  if(!confirm("この記録を消しますか？")) return;
+  data.entries = data.entries.filter(e=>e.id!==id);
+  save(); renderLog(); renderHome();
+}
+
+/* ================= pattern ================= */
+function renderPattern(){
+  const box = document.getElementById("patternBars");
+  const msg = document.getElementById("patternMsg");
+  const tbox = document.getElementById("timeBars");
+
+  const limit = new Date(); limit.setDate(limit.getDate()-30);
+  const recent = data.entries.filter(e=> new Date(e.date) >= limit);
+
+  if(recent.length < 3){
+    box.innerHTML = '<div class="empty">記録が3つたまると、けはいが見えてきます。<br>あせらず、ゆっくりで🌱</div>';
+    msg.style.display="none";
+    tbox.innerHTML = '<div class="empty">こちらも、記録がたまったら🕰️</div>';
+    return;
+  }
+  msg.style.display="block";
+
+  const counts = {};
+  recent.forEach(e=> e.moods.forEach(id=> counts[id]=(counts[id]||0)+1));
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+
+  if(sorted.length===0){
+    box.innerHTML = '<div class="empty">気持ちの記録がたまると、ここに出てきます🌱</div>';
+    msg.style.display="none";
+  }else{
+    const max = sorted[0][1];
+    box.innerHTML = sorted.map(([id,n])=>{
+      const m = MOODS.find(x=>x.id===id);
+      return '<div class="bar-row"><div class="bar-lbl">'+esc(m.label)+'</div>'
+        + '<div class="bar-track"><div class="bar-fill" style="width:'+(n/max*100)+'%"></div></div>'
+        + '<div class="bar-num">'+n+'回</div></div>';
+    }).join("");
+    const top = sorted[0][0];
+    msg.innerHTML = "<b>🌷 いちばん多かったのは「"+esc((MOODS.find(x=>x.id===top)||{}).label)+"」</b>"
+      + esc(MOOD_INSIGHT[top] || "")
+      + "<br><span style='font-size:.78rem;opacity:.8'>※ 多い＝悪い、ではありません。けはいを知ることが、やさしい変化のはじまりです。</span>";
+  }
+
+  /* time of day */
+  const zones = [ ["朝（〜10時）",0,10],["ひる（10〜15時）",10,15],["ゆうがた（15〜19時）",15,19],["よる（19〜24時）",19,24] ];
+  const zc = [0,0,0,0];
+  recent.forEach(e=>{
+    if(!e.time) return;
+    const h = Number(e.time.split(":")[0]);
+    zones.forEach((z,i)=>{ if(h>=z[1] && h<z[2]) zc[i]++; });
+  });
+  const zmax = Math.max(...zc,1);
+  tbox.innerHTML = zones.map((z,i)=>
+    '<div class="bar-row"><div class="bar-lbl">'+z[0]+'</div>'
+    + '<div class="bar-track"><div class="bar-fill" style="width:'+(zc[i]/zmax*100)+'%"></div></div>'
+    + '<div class="bar-num">'+zc[i]+'回</div></div>'
+  ).join("");
+}
+
+/* ================= learn ================= */
+function initLearn(){
+  const box = document.getElementById("learnList");
+  LEARN.forEach((c,i)=>{
+    const div = document.createElement("div");
+    div.className="learn-card";
+    div.innerHTML = '<button class="learn-head"><span class="em">'+c.em+'</span>'
+      + '<span class="tt">'+esc(c.tt)+'</span><span class="arrow">▶</span></button>'
+      + '<div class="learn-body">'+c.body
+      + '<div class="try"><b>🌱 きょうからできる小さなこと</b>'+esc(c.try)+'</div></div>';
+    div.querySelector(".learn-head").addEventListener("click",()=>{
+      div.classList.toggle("open");
+    });
+    box.appendChild(div);
+  });
+}
+
+/* ================= watashi（あいことば式） ================= */
+function b64buf(s){
+  const bin = atob(s); const a = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) a[i] = bin.charCodeAt(i);
+  return a;
+}
+async function tryUnlock(pass){
+  const enc = new TextEncoder();
+  const km = await crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    {name:"PBKDF2", salt:b64buf(WATASHI_LOCK.salt), iterations:250000, hash:"SHA-256"},
+    km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64buf(WATASHI_LOCK.iv)}, key, b64buf(WATASHI_LOCK.data));
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+function renderWatashi(p){
+  document.getElementById("rhythmNote").innerHTML = p.rhythm;
+  document.getElementById("storyTl").innerHTML = p.story.map(s=>
+    '<div class="tl-item"><div class="tl-age">'+esc(s.age)+'</div>'
+    + '<div class="tl-tt">'+esc(s.tt)+'</div>'
+    + '<div class="tl-body">'+esc(s.body)+'</div></div>'
+  ).join("");
+  const box = document.getElementById("hypoList");
+  box.innerHTML = "";
+  p.hypo.forEach(c=>{
+    const div = document.createElement("div");
+    div.className="learn-card";
+    div.innerHTML = '<button class="learn-head"><span class="em">'+c.em+'</span>'
+      + '<span class="tt">'+esc(c.tt)+'</span><span class="arrow">▶</span></button>'
+      + '<div class="learn-body">'+c.body
+      + '<div class="try"><b>🌱 こころみ</b>'+esc(c.try)+'</div></div>';
+    div.querySelector(".learn-head").addEventListener("click",()=>{
+      div.classList.toggle("open");
+    });
+    box.appendChild(div);
+  });
+  document.getElementById("shohoBox").innerHTML =
+    p.shoho.map(h=>'<div class="shoho">'+h+'</div>').join("");
+  document.getElementById("watashiLockCard").style.display="none";
+  document.getElementById("watashiBody").style.display="block";
+}
+async function unlockFlow(pass, silent){
+  const msg = document.getElementById("lockMsg");
+  try{
+    const p = await tryUnlock(pass);
+    localStorage.setItem("tabegokoro_pass", pass);
+    renderWatashi(p);
+    msg.textContent = "";
+    return true;
+  }catch(e){
+    if(!silent) msg.textContent = "あいことばがちがうみたい。ゆっくりでだいじょうぶ🌱";
+    return false;
+  }
+}
+document.getElementById("unlockBtn").addEventListener("click",()=>{
+  const pass = document.getElementById("passInput").value.trim();
+  if(!pass){ document.getElementById("passInput").focus(); return; }
+  document.getElementById("lockMsg").textContent = "ひらいています…";
+  unlockFlow(pass, false);
+});
+document.getElementById("passInput").addEventListener("keydown",(e)=>{
+  if(e.key==="Enter") document.getElementById("unlockBtn").click();
+});
+
+/* ================= init ================= */
+initForm();
+initLearn();
+renderHome();
+renderLog();
+const savedPass = localStorage.getItem("tabegokoro_pass");
+if(savedPass) unlockFlow(savedPass, true);
+</script>
+</body>
+</html>
